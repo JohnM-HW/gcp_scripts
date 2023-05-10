@@ -1,12 +1,11 @@
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from google.cloud import logging_v2
 
 # Set the GCP project ID
-project_id = "658064724656"
+project_id = "online-legacy-web"
 
 # Set the name of the log to query
-log_name = "cloudaudit.googleapis.com/activity"
+log_name = "cloudaudit.googleapis.com%2Factivity"
 
 # Create a logging client
 #logging_client = logging_v2.LoggingServiceV2Client()
@@ -14,10 +13,13 @@ client = logging_v2.Client(project=project_id)
 
 
 # Set the filter for the log query to only include logs from the past hour
-filter_str = f'logName = "projects/{project_id}/logs/{log_name}" AND timestamp >= "{(datetime.utcnow() - timedelta(hours=1)).isoformat()}"'
+timestamp_format = "%Y-%m-%dT%H:%M:%S.%fZ"
+start_time = (datetime.utcnow() - timedelta(hours=1)).strftime(timestamp_format)
+filter_str = f'logName="projects/{project_id}/logs/{log_name}" AND timestamp>="{start_time}"'
+
 
 # Execute the log query
-response = client.list_log_entries(filter_=filter_str)
+response = client.list_entries(filter_=filter_str)
 
 # Extract the unique service names and their labels from the log entries
 services = {}
