@@ -1,3 +1,5 @@
+from datetime import datetime
+from datetime import timedelta
 from google.cloud import logging_v2
 
 # Set the GCP project ID
