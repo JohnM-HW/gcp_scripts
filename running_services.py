@@ -1,6 +1,4 @@
 from google.cloud import logging_v2
-from google.cloud.logging_v2.services.logging_service_v2 import LoggingServiceV2Client
-from google.cloud.logging_v2.types import LogSink
 
 # Set the GCP project ID
 project_id = "658064724656"
@@ -9,13 +7,15 @@ project_id = "658064724656"
 log_name = "cloudaudit.googleapis.com/activity"
 
 # Create a logging client
-logging_client = logging_v2.LoggingServiceV2Client()
+#logging_client = logging_v2.LoggingServiceV2Client()
+client = logging_v2.Client(project=project_id)
+
 
 # Set the filter for the log query to only include logs from the past hour
 filter_str = f'logName = "projects/{project_id}/logs/{log_name}" AND timestamp >= "{(datetime.utcnow() - timedelta(hours=1)).isoformat()}"'
 
 # Execute the log query
-response = logging_client.list_log_entries(filter_=filter_str)
+response = client.list_log_entries(filter_=filter_str)
 
 # Extract the unique service names and their labels from the log entries
 services = {}
